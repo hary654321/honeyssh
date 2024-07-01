@@ -3,3 +3,4 @@ logs/*
 honeyssh
 honeycfg
 .*
+vendor
