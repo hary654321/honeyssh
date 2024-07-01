@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"io"
+	"log"
 	"time"
 
 	"google.golang.org/protobuf/encoding/protojson"
@@ -61,6 +62,12 @@ type LogType = isLogEntry_LogType
 
 func (l *SessionLogger) Record(event LogType) error {
 	return l.recordLogType(l.sessionID, event)
+}
+
+func (l *SessionLogger) Print(event LogType) error {
+	log.Println("evetnt:", event)
+
+	return nil
 }
 
 func (l *SessionLogger) SessionID() string {

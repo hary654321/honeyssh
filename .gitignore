@@ -4,3 +4,6 @@ honeyssh
 honeycfg
 .*
 vendor
+main
+*.log
+session_logs
