@@ -16,6 +16,7 @@ import (
 	"github.com/josephlewis42/honeyssh/core/logger"
 	"github.com/josephlewis42/honeyssh/core/ttylog"
 	"github.com/josephlewis42/honeyssh/core/vos"
+	"github.com/josephlewis42/honeyssh/jsonlog"
 	gossh "golang.org/x/crypto/ssh"
 )
 
@@ -105,15 +106,13 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 
 			// Log the login
 			if !successfulLogin {
-				honeypot.logger.Sessionless().Record(&logger.LogEntry_LoginAttempt{
-					LoginAttempt: &logger.LoginAttempt{
-						Result:     logger.OperationResult_FAILURE,
-						Username:   ctx.User(),
-						PublicKey:  maybeBytes(ctx.Value(ContextAuthPublicKey)),
-						Password:   fmt.Sprintf("%v", password),
-						RemoteAddr: fmt.Sprintf("%v", ctx.RemoteAddr()),
-					},
-				})
+				extend := make(map[string]any)
+				extend["username"] = ctx.User()
+				extend["password"] = password
+				extend["succ"] = false
+				extend["PublicKey"] = maybeBytes(ctx.Value(ContextAuthPublicKey))
+
+				jsonlog.GlobalLog.HoneyLog(ctx.LocalAddr().String(), ctx.RemoteAddr().String(), "login", extend)
 			}
 
 			return successfulLogin
@@ -125,6 +124,9 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 				if configuration.SSHBanner != "" {
 					return strings.TrimRight(configuration.SSHBanner, "\n") + "\n"
 				}
+
+				// json.GlobalLog.HoneyLog(ctx.LocalAddr().String(), ctx.RemoteAddr().String(), "scan", nil)
+
 				return ""
 			}
 
@@ -164,20 +166,17 @@ func (h *Honeypot) HandleConnection(s ssh.Session) error {
 		}
 	}()
 
-	// Log the login
-	sessionLogger.Record(&logger.LogEntry_LoginAttempt{
-		LoginAttempt: &logger.LoginAttempt{
-			Result:               logger.OperationResult_SUCCESS,
-			Username:             s.User(),
-			PublicKey:            maybeBytes(s.Context().Value(ContextAuthPublicKey)),
-			Password:             fmt.Sprintf("%s", s.Context().Value(ContextAuthPassword)),
-			RemoteAddr:           fmt.Sprintf("%s", s.RemoteAddr()),
-			EnvironmentVariables: s.Environ(),
-			Command:              s.Command(),
-			RawCommand:           s.RawCommand(),
-			Subsystem:            s.Subsystem(),
-		},
-	})
+	extend := make(map[string]any)
+	extend["username"] = s.User()
+	extend["password"] = fmt.Sprintf("%s", s.Context().Value(ContextAuthPassword))
+	extend["succ"] = true
+	extend["PublicKey"] = maybeBytes(s.Context().Value(ContextAuthPublicKey))
+	extend["EnvironmentVariables"] = s.Environ()
+	extend["cmd"] = s.Command()
+	extend["RawCommand"] = s.RawCommand()
+	extend["Subsystem"] = s.Subsystem()
+
+	jsonlog.GlobalLog.HoneyLog(s.LocalAddr().String(), s.RemoteAddr().String(), "login", extend)
 
 	// Set up I/O and loging.
 	logFileName := fmt.Sprintf("%s.%s", time.Now().Format(time.RFC3339Nano), ttylog.AsciicastFileExt)

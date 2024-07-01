@@ -1,5 +1,6 @@
 # Port to listen on for SSH connections.
 ssh_port: 2222
+log_path: "/var/log/ssh/ssh.json"
 
 # Message of the day to display when a user logs in.
 motd: ""

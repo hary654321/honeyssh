@@ -33,6 +33,7 @@ type Configuration struct {
 	configFs afero.Fs
 
 	Motd             string `json:"motd"`
+	LogPaht          string `json:"log_path"`
 	SSHPort          int    `json:"ssh_port" validate:"gte=0,lte=65535"`
 	SSHBanner        string `json:"ssh_banner"`
 	AllowAnyPassword bool   `json:"allow_any_password"`
