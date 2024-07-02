@@ -85,7 +85,7 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 		Addr:    fmt.Sprintf(":%d", configuration.SSHPort),
 		Handler: func(s ssh.Session) {
 
-			log.Printf("Stack trace:\n%s", debug.Stack())
+			// log.Printf("Stack trace:\n%s", debug.Stack())
 			honeypot.HandleConnection(s)
 		},
 		PublicKeyHandler: func(ctx ssh.Context, key ssh.PublicKey) bool {

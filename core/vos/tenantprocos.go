@@ -132,7 +132,7 @@ type ProcAttr struct {
 // new process, so it normally starts with the program name.
 func (ea *TenantProcOS) StartProcess(name string, argv []string, attr *ProcAttr) (VOS, error) {
 
-	log.Printf("Stack trace:\n%s", debug.Stack())
+	// log.Printf("Stack trace:\n%s", debug.Stack())
 
 	if attr == nil {
 		attr = &ProcAttr{}
