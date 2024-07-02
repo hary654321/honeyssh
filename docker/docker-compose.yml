@@ -1,0 +1,12 @@
+version: '2.3'
+
+services:
+
+
+  redishoneypot:
+    container_name: ssh
+    restart: always
+    network_mode: "host"
+    image: "hary654321/ssh"
+    volumes:
+     - $PWD/data/ssh/log:/var/log/ssh

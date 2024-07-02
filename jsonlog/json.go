@@ -4,7 +4,7 @@
  * @Autor: ABing
  * @Date: 2024-06-28 12:49:20
  * @LastEditors: lhl
- * @LastEditTime: 2024-07-02 17:02:40
+ * @LastEditTime: 2024-07-02 17:32:10
  */
 package jsonlog
 
@@ -22,7 +22,7 @@ import (
 var GlobalLog *Logger
 
 func Init() {
-	GlobalLog = &Logger{LogFile: "log/ssh/ssh.json"}
+	GlobalLog = &Logger{LogFile: "/var/log/ssh/ssh.json"}
 }
 
 type Logger struct {

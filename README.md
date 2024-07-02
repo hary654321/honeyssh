@@ -122,3 +122,6 @@ directories.
 ## Credits
 
 * Inspired by the now defunct [Kippo](https://www.honeynet.org/projects/old/kippo/) project.
+
+
+ docker build -t hary654321/ssh  .
