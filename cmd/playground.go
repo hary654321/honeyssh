@@ -31,6 +31,10 @@ func (p *playgroundSession) RemoteAddr() net.Addr {
 	return &net.IPNet{IP: net.IPv4(8, 8, 8, 8), Mask: net.IPv4Mask(255, 255, 255, 255)}
 }
 
+func (f *playgroundSession) LocalAddr() net.Addr {
+	return &net.IPNet{IP: net.IPv4(8, 8, 8, 8), Mask: net.IPv4Mask(255, 255, 255, 255)}
+}
+
 func (p *playgroundSession) Exit(code int) error {
 	os.Exit(code)
 	return nil

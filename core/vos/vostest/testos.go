@@ -33,6 +33,10 @@ func (f *FakeSSHSession) RemoteAddr() net.Addr {
 	return &net.IPNet{IP: net.IPv4(8, 8, 8, 8), Mask: net.IPv4Mask(255, 255, 255, 255)}
 }
 
+func (f *FakeSSHSession) LocalAddr() net.Addr {
+	return &net.IPNet{IP: net.IPv4(8, 8, 8, 8), Mask: net.IPv4Mask(255, 255, 255, 255)}
+}
+
 func (f *FakeSSHSession) Exit(code int) error {
 	return nil
 }

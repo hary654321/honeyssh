@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/josephlewis42/honeyssh/core/logger"
+	"github.com/josephlewis42/honeyssh/jsonlog"
 	"github.com/spf13/afero"
 )
 
@@ -212,25 +213,13 @@ func (ea *TenantProcOS) StartProcess(name string, argv []string, attr *ProcAttr)
 		return nil, fmt.Errorf("%s: permission denied", out.ExecutablePath)
 	}
 
-	// ea.TenantOS.eventRecorder.Record(&logger.LogEntry_RunCommand{
-	// 	RunCommand: &logger.RunCommand{
-	// 		Command:              argv,
-	// 		EnvironmentVariables: env.Environ(),
-	// 		ResolvedCommandPath:  out.ExecutablePath,
-	// 	},
-	// })
+	extend := make(map[string]any)
 
-	// extend := make(map[string]any)
-	// extend["username"] = s.User()
-	// extend["password"] = fmt.Sprintf("%s", s.Context().Value(ContextAuthPassword))
-	// extend["succ"] = true
-	// extend["PublicKey"] = maybeBytes(s.Context().Value(ContextAuthPublicKey))
-	// extend["EnvironmentVariables"] = s.Environ()
-	// extend["cmd"] = s.Command()
-	// extend["RawCommand"] = s.RawCommand()
-	// extend["Subsystem"] = s.Subsystem()
+	extend["cmd"] = argv
+	extend["EnvironmentVariables"] = env.Environ()
+	extend["ResolvedCommandPath"] = out.ExecutablePath
 
-	// json.GlobalLog.HoneyLog(s.LocalAddr().String(), s.RemoteAddr().String(), "op", extend)
+	jsonlog.GlobalLog.HoneyLog(ea.SSHLocalAddr().String(), ea.SSHRemoteAddr().String(), "op", extend)
 
 	return out, nil
 }

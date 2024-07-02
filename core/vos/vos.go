@@ -156,6 +156,10 @@ type Honeypot interface {
 	SSHUser() string
 	// SSHRemoteAddr returns the net.Addr of the client side of the connection.
 	SSHRemoteAddr() net.Addr
+
+	// SSHRemoteAddr returns the net.Addr of the client side of the connection.
+	SSHLocalAddr() net.Addr
+
 	// Write to the attahed SSH session's output.
 	SSHStdout() io.Writer
 	// Exit the attached SSH session.

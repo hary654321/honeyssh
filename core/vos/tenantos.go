@@ -30,6 +30,7 @@ type EventRecorder interface {
 type SSHSession interface {
 	User() string
 	RemoteAddr() net.Addr
+	LocalAddr() net.Addr
 	Exit(code int) error
 	Write([]byte) (int, error)
 }
@@ -99,6 +100,11 @@ func (t *TenantOS) SSHUser() string {
 // SSHRemoteAddr returns the net.Addr of the client side of the connection.
 func (t *TenantOS) SSHRemoteAddr() net.Addr {
 	return t.session.RemoteAddr()
+}
+
+// SSHRemoteAddr returns the net.Addr of the client side of the connection.
+func (t *TenantOS) SSHLocalAddr() net.Addr {
+	return t.session.LocalAddr()
 }
 
 // SSHStdout is a direct connection to the SSH stdout stream.
