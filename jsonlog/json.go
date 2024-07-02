@@ -4,7 +4,7 @@
  * @Autor: ABing
  * @Date: 2024-06-28 12:49:20
  * @LastEditors: lhl
- * @LastEditTime: 2024-07-01 18:54:03
+ * @LastEditTime: 2024-07-02 14:45:29
  */
 package jsonlog
 
@@ -91,9 +91,9 @@ func (l *Logger) HoneyLog(LocalAddr, RemoteAddr string, atype string, extend map
 		SrcPort:   portInt,
 		Extend:    extend,
 		UUID:      "<UUID>",
-		App:       "telnet",
-		Name:      "telnet",
-		Protocol:  "telnet",
+		App:       "ssh",
+		Name:      "ssh",
+		Protocol:  "ssh",
 		Timestamp: milliseconds,
 	}
 

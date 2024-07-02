@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -125,12 +126,16 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 					return strings.TrimRight(configuration.SSHBanner, "\n") + "\n"
 				}
 
-				// json.GlobalLog.HoneyLog(ctx.LocalAddr().String(), ctx.RemoteAddr().String(), "scan", nil)
-
 				return ""
 			}
 
 			return config
+		},
+
+		ConnCallback: func(ctx ssh.Context, conn net.Conn) net.Conn {
+			log.Println("ConnCallback", conn.LocalAddr())
+			jsonlog.GlobalLog.HoneyLog(conn.LocalAddr().String(), conn.RemoteAddr().String(), "scan", nil)
+			return conn
 		},
 	}
 
