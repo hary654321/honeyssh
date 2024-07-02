@@ -84,6 +84,8 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 		Version: "OpenSSH_8.2p1",
 		Addr:    fmt.Sprintf(":%d", configuration.SSHPort),
 		Handler: func(s ssh.Session) {
+
+			log.Printf("Stack trace:\n%s", debug.Stack())
 			honeypot.HandleConnection(s)
 		},
 		PublicKeyHandler: func(ctx ssh.Context, key ssh.PublicKey) bool {
@@ -151,6 +153,9 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 }
 
 func (h *Honeypot) Close() error {
+
+	log.Println("Honeypot Close")
+
 	return h.toClose.Close()
 }
 

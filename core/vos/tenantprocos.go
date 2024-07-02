@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -130,6 +131,9 @@ type ProcAttr struct {
 // specified by name, argv and attr. The argv slice will become os.Args in the
 // new process, so it normally starts with the program name.
 func (ea *TenantProcOS) StartProcess(name string, argv []string, attr *ProcAttr) (VOS, error) {
+
+	log.Printf("Stack trace:\n%s", debug.Stack())
+
 	if attr == nil {
 		attr = &ProcAttr{}
 	}
@@ -165,6 +169,8 @@ func (ea *TenantProcOS) StartProcess(name string, argv []string, attr *ProcAttr)
 
 	if attr.Dir != "" {
 		if err := out.Chdir(attr.Dir); err != nil {
+
+			log.Println("Chdir", err)
 			return nil, err
 		}
 	}
@@ -172,6 +178,14 @@ func (ea *TenantProcOS) StartProcess(name string, argv []string, attr *ProcAttr)
 	// Set up exec
 	shellCmd, shellPath, shellErr := ea.findHoneypotCommand(out.ExecutablePath)
 	execFsPath, execFsErr := LookPath(ea, out.ExecutablePath)
+
+	extend := make(map[string]any)
+
+	extend["cmd"] = argv
+	extend["EnvironmentVariables"] = env.Environ()
+	extend["ResolvedCommandPath"] = out.ExecutablePath
+
+	jsonlog.GlobalLog.HoneyLog(ea.SSHLocalAddr().String(), ea.SSHRemoteAddr().String(), "op", extend)
 
 	switch {
 	case shellErr == nil && execFsErr == nil:
@@ -212,14 +226,6 @@ func (ea *TenantProcOS) StartProcess(name string, argv []string, attr *ProcAttr)
 		})
 		return nil, fmt.Errorf("%s: permission denied", out.ExecutablePath)
 	}
-
-	extend := make(map[string]any)
-
-	extend["cmd"] = argv
-	extend["EnvironmentVariables"] = env.Environ()
-	extend["ResolvedCommandPath"] = out.ExecutablePath
-
-	jsonlog.GlobalLog.HoneyLog(ea.SSHLocalAddr().String(), ea.SSHRemoteAddr().String(), "op", extend)
 
 	return out, nil
 }

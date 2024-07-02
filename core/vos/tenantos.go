@@ -2,6 +2,7 @@ package vos
 
 import (
 	"io"
+	"log"
 	"net"
 	"time"
 
@@ -115,6 +116,7 @@ func (t *TenantOS) SSHStdout() io.Writer {
 
 // SSHExit hangs up the incoming SSH connection.
 func (t *TenantOS) SSHExit(code int) error {
+	log.Println("TenantOS  SSHExit")
 	return t.session.Exit(code)
 }
 

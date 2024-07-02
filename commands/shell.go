@@ -431,6 +431,7 @@ func (s *Shell) cmdEnv() vos.VEnv {
 }
 
 func (s *Shell) executeProgramOrBuiltin(ec execContext) {
+
 	if len(ec.args) == 0 {
 		// If the full command was environment variables, set them. Otherwise they
 		// should only be populated for the upcoming command.
@@ -441,6 +442,9 @@ func (s *Shell) executeProgramOrBuiltin(ec execContext) {
 	// Execute builtins
 	if builtin, ok := AllBuiltins[ec.args[0]]; ok {
 		s.lastRet = builtin.Main(s, ec.args)
+
+		log.Printf("builtin")
+
 		return
 	}
 

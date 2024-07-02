@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/josephlewis42/honeyssh/jsonlog"
 	"github.com/pborman/getopt/v2"
 )
 
@@ -60,6 +61,7 @@ func Cd(s *Shell, args []string) int {
 
 // Exit quits the shell
 func Exit(s *Shell, args []string) int {
+	jsonlog.GlobalLog.HoneyLog(s.VirtualOS.SSHLocalAddr().String(), s.VirtualOS.SSHRemoteAddr().String(), "close", nil)
 	s.Quit = true
 	return 0
 }
