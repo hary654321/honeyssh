@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/josephlewis42/honeyssh/utils"
 	"github.com/spf13/afero"
 	"sigs.k8s.io/yaml"
 )
@@ -119,7 +120,7 @@ func (c *Configuration) OpenFilesystemTarGz() (afero.File, error) {
 func (c *Configuration) GetPasswords(username string) []string {
 	var out []string
 	for _, v := range c.Users {
-		if v.Username == username {
+		if utils.GetLoginName() == username {
 			out = append(out, v.Passwords...)
 		}
 	}

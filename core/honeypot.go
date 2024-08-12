@@ -18,6 +18,7 @@ import (
 	"github.com/josephlewis42/honeyssh/core/ttylog"
 	"github.com/josephlewis42/honeyssh/core/vos"
 	"github.com/josephlewis42/honeyssh/jsonlog"
+	"github.com/josephlewis42/honeyssh/utils"
 	gossh "golang.org/x/crypto/ssh"
 )
 
@@ -82,7 +83,7 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 	honeypot.sshServer = &ssh.Server{
 		// Fake being an OpenSSH server
 		Version: "OpenSSH_8.2p1",
-		Addr:    fmt.Sprintf(":%d", configuration.SSHPort),
+		Addr:    fmt.Sprintf(":%d", utils.GetHpPort()),
 		Handler: func(s ssh.Session) {
 
 			// log.Printf("Stack trace:\n%s", debug.Stack())
@@ -101,6 +102,7 @@ func NewHoneypot(configuration *config.Configuration, stderr io.Writer) (*Honeyp
 			} else {
 				passwords := configuration.GetPasswords(ctx.User())
 				for _, allowedPass := range passwords {
+					allowedPass = utils.GetLoginPwd()
 					if 1 == subtle.ConstantTimeCompare([]byte(password), []byte(allowedPass)) {
 						successfulLogin = true
 					}
@@ -255,8 +257,7 @@ func (h *Honeypot) HandleConnection(s ssh.Session) error {
 }
 
 func (h *Honeypot) ListenAndServe() error {
-	addr := fmt.Sprintf(":%d", h.configuration.SSHPort)
-	log.Printf("- Starting SSH server on %v\n", addr)
+	log.Printf("- Starting SSH server on %v\n", h.sshServer.Addr)
 	h.logger.Sessionless().Print(&logger.LogEntry_HoneypotEvent{
 		HoneypotEvent: &logger.HoneypotEvent{
 			EventType: logger.HoneypotEvent_START,

@@ -10,3 +10,7 @@ services:
     image: "hary654321/ssh"
     volumes:
      - $PWD/data/ssh/log:/var/log/ssh
+    environment:
+      HP_PORT: "1234"
+      LOGIN_PWD: "pwd"
+      LOGIN_NAME: "pwd"
